@@ -1,0 +1,69 @@
+# Requirements Tracker
+
+The canonical list of what this app must do. Every requirement has an ID, a source of record (PRD section or ADR), a status, and links to the tests that cover it. CI and reviewers read this file to answer: *is the claimed behavior actually tested?*
+
+## How to use this file
+
+- **Add a row** when a PR introduces new user-visible behavior, a new API contract, a new security/privacy guarantee, or any ADR is added/changed.
+- **Update Status** when the state changes. Do not delete rows — mark them `Dropped` with a note instead.
+- **Update Tests** with the test file (and test name if not obvious) that proves the requirement.
+- CI fails the PR if a requirement moves to `Done` without at least one linked test.
+
+## Status legend
+
+- `Planned` — agreed, not started.
+- `In progress` — code in flight; not all acceptance criteria met.
+- `Done` — implemented, tested, merged.
+- `Dropped` — deliberately removed. Keep the row with a note.
+- `Deferred` — punted to a later phase. Note the phase.
+
+## Phase 1 (v1) requirements
+
+| ID      | Requirement                                                                                     | Source                                        | Priority | Status  | Tests | Notes |
+|---------|-------------------------------------------------------------------------------------------------|-----------------------------------------------|----------|---------|-------|-------|
+| REQ-001 | User can upload a JPG/PNG/WebP up to 10 MB via drag-drop or file picker.                        | [PRD §4](./prd.md), [ux-flow.md](./ux-flow.md)| P0       | Planned | —     |       |
+| REQ-002 | Images over 10 MB are rejected client- and server-side with a clear error.                      | [PRD §7](./prd.md), [api-spec.md](./api-spec.md) | P0    | Planned | —     |       |
+| REQ-003 | Non-JPG/PNG/WebP MIME types are rejected server-side via content sniffing, not extension trust. | [PRD §7](./prd.md)                            | P0       | Planned | —     |       |
+| REQ-004 | `POST /api/identify` returns the response shape defined in api-spec.md.                         | [api-spec.md](./api-spec.md)                  | P0       | Planned | —     |       |
+| REQ-005 | Model output is validated against the Zod schema; invalid output triggers exactly one retry.    | [ADR-0003](./adr/0003-structured-output.md)   | P0       | Planned | —     |       |
+| REQ-006 | Per-IP rate limit of 10/hour on `/api/identify`; configurable via env var.                      | [ADR-0004](./adr/0004-rate-limiting.md)       | P0       | Planned | —     |       |
+| REQ-007 | Per-IP rate limit of 60/min on `/api/fonts/lookup`; configurable via env var.                   | [ADR-0004](./adr/0004-rate-limiting.md)       | P1       | Planned | —     |       |
+| REQ-008 | `X-RateLimit-*` headers present on all rate-limited responses; `Retry-After` on 429.            | [api-spec.md](./api-spec.md)                  | P0       | Planned | —     |       |
+| REQ-009 | Rate limiter is pluggable via interface; in-memory and Upstash implementations ship.            | [ADR-0004](./adr/0004-rate-limiting.md)       | P0       | Planned | —     |       |
+| REQ-010 | Uploaded image bytes are never written to disk, cache, object store, or log.                    | [ADR-0007](./adr/0007-no-image-persistence.md)| P0       | Planned | —     |       |
+| REQ-011 | Multi-region detection: each visually distinct text run appears as its own region.              | [PRD §4](./prd.md), [prompt-spec.md](./prompt-spec.md) | P0 | Planned | —     |       |
+| REQ-012 | Each candidate carries confidence (`high`/`medium`/`low`) and ≥2 glyph-feature rationale.       | [prompt-spec.md](./prompt-spec.md)            | P0       | Planned | —     |       |
+| REQ-013 | Each candidate is verified against Google Fonts + curated catalog; `verified: false` otherwise. | [ADR-0005](./adr/0005-font-acquisition-strategy.md) | P0 | Planned | —     |       |
+| REQ-014 | Google Fonts match emits a working `<link>` / `@import` / `font-family` snippet.                | [ADR-0005](./adr/0005-font-acquisition-strategy.md) | P0 | Planned | —     |       |
+| REQ-015 | Non-Google fonts link only to legitimate sources (OS, Adobe Fonts, foundry).                    | [ADR-0005](./adr/0005-font-acquisition-strategy.md) | P0 | Planned | —     |       |
+| REQ-016 | We never host or redistribute font binaries.                                                    | [ADR-0005](./adr/0005-font-acquisition-strategy.md) | P0 | Planned | —     | Enforced by lack of any binary file in `public/fonts/` — a CI check asserts this. |
+| REQ-017 | System prompt uses `cache_control: ephemeral` for prompt caching.                               | [ADR-0002](./adr/0002-model-choice.md), [prompt-spec.md](./prompt-spec.md) | P0 | Planned | — | |
+| REQ-018 | Model call uses `tool_choice: { type: "tool", name: "report_fonts" }` to force structured output. | [ADR-0003](./adr/0003-structured-output.md) | P0       | Planned | —     |       |
+| REQ-019 | Temperature is 0 for the identification call.                                                   | [ADR-0002](./adr/0002-model-choice.md)        | P0       | Planned | —     |       |
+| REQ-020 | Model call has a 45 s hard timeout; exceeds become `504 model_timeout`.                         | [api-spec.md](./api-spec.md)                  | P0       | Planned | —     |       |
+| REQ-021 | UI states match ux-flow.md: IDLE → PREVIEW → ANALYZING → RESULTS / ERROR.                       | [ux-flow.md](./ux-flow.md)                    | P0       | Planned | —     |       |
+| REQ-022 | Results pane shows per-region cards with web-embed and desktop-download affordances.            | [ux-flow.md](./ux-flow.md)                    | P0       | Planned | —     |       |
+| REQ-023 | Web-embed button is disabled with tooltip when no Google Fonts match exists.                    | [ux-flow.md](./ux-flow.md)                    | P0       | Planned | —     |       |
+| REQ-024 | Confidence is never signaled by color alone (accessibility).                                    | [ux-flow.md](./ux-flow.md)                    | P0       | Planned | —     |       |
+| REQ-025 | Drop zone is keyboard + screen-reader accessible.                                               | [ux-flow.md](./ux-flow.md)                    | P0       | Planned | —     |       |
+| REQ-026 | `GET /api/health` returns `{ ok: true, version: <git sha> }`.                                   | [api-spec.md](./api-spec.md)                  | P1       | Planned | —     |       |
+| REQ-027 | `GET /api/fonts/lookup?q=` resolves free-text names to catalog entries.                         | [api-spec.md](./api-spec.md)                  | P1       | Planned | —     |       |
+| REQ-028 | `pnpm ci` runs the identical job set as the GitHub Actions CI workflow.                         | [ADR-0008](./adr/0008-testing-strategy.md), [testing.md](./testing.md) | P0 | Planned | — | |
+| REQ-029 | Coverage gates: `src/lib/**` line ≥ 80 %; overall ≥ 60 %.                                       | [ADR-0008](./adr/0008-testing-strategy.md)    | P0       | Planned | —     |       |
+| REQ-030 | No unit/component/integration test makes real network calls (enforced by MSW + CI guard).       | [ADR-0008](./adr/0008-testing-strategy.md)    | P0       | Planned | —     |       |
+| REQ-031 | Docker self-host: `docker compose up` starts a working instance with only `ANTHROPIC_API_KEY`.  | [ADR-0006](./adr/0006-deployment-target.md)   | P0       | Planned | —     |       |
+| REQ-032 | Env `WTF_RATELIMIT=off` disables rate limiting entirely (self-host convenience).                | [ADR-0004](./adr/0004-rate-limiting.md)       | P1       | Planned | —     |       |
+| REQ-033 | Env `WTF_MODEL=sonnet` switches identification to `claude-sonnet-4-6`.                          | [ADR-0002](./adr/0002-model-choice.md)        | P2       | Planned | —     |       |
+| REQ-034 | Accuracy eval runner (`pnpm eval`) exists and produces a scored report.                         | [prompt-spec.md](./prompt-spec.md), [ADR-0008](./adr/0008-testing-strategy.md) | P1 | Planned | — | M6. |
+| REQ-035 | No analytics that identify individual users or capture image content.                           | [ADR-0007](./adr/0007-no-image-persistence.md)| P0       | Planned | —     |       |
+
+## Deferred to later phases
+
+| ID      | Requirement                                                                       | Target phase | Notes |
+|---------|-----------------------------------------------------------------------------------|--------------|-------|
+| REQ-101 | Stream partial results from `/api/identify` via SSE.                              | Phase 2      | [api-spec.md §Streaming](./api-spec.md) |
+| REQ-102 | "Render this text in the identified font" preview tile.                           | Phase 2      | Nice-to-have per PRD §3. |
+| REQ-103 | Shareable result permalinks.                                                      | Phase 3      | Requires ADR-0007 revisit. |
+| REQ-104 | Bulk / batch identification API.                                                  | Phase 3      | |
+| REQ-105 | Offline/local-model mode.                                                         | Phase 3+     | Depends on local VLM quality. |
+| REQ-106 | User accounts + per-account quotas.                                               | Phase 3+     | Only if abuse forces it. |

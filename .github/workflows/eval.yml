@@ -1,0 +1,45 @@
+name: Accuracy eval
+
+# Manual only. Real Anthropic calls cost money and are non-deterministic, so we
+# do not run this on every PR. Trigger before merging a prompt or model change.
+on:
+  workflow_dispatch:
+    inputs:
+      model:
+        description: "Model id override (default: claude-opus-4-6)"
+        required: false
+        default: "claude-opus-4-6"
+      baseline:
+        description: "Baseline file to compare against (e.g. 2026-04-15.json)"
+        required: false
+        default: "latest"
+
+concurrency:
+  group: eval-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  run-eval:
+    name: Run accuracy eval
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      WTF_MODEL: ${{ inputs.model }}
+      WTF_RATELIMIT: "off"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: "9" }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm eval -- --baseline "${{ inputs.baseline }}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eval-report
+          path: eval/reports/
+          retention-days: 90

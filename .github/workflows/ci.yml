@@ -1,0 +1,207 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "20"
+  PNPM_VERSION: "9"
+  # Deterministic test env. No real API calls from unit/component/integration.
+  ANTHROPIC_API_KEY: "test-key-never-used"
+  WTF_RATELIMIT: "off"
+
+jobs:
+  install:
+    name: Install & cache
+    runs-on: ubuntu-latest
+    outputs:
+      pnpm-store: ${{ steps.pnpm-store.outputs.path }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: "${{ env.PNPM_VERSION }}" }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "${{ env.NODE_VERSION }}"
+          cache: "pnpm"
+      - name: Resolve pnpm store
+        id: pnpm-store
+        run: echo "path=$(pnpm store path)" >> "$GITHUB_OUTPUT"
+      - run: pnpm install --frozen-lockfile
+
+  lint:
+    name: Lint
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: "${{ env.PNPM_VERSION }}" }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "${{ env.NODE_VERSION }}"
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+
+  format:
+    name: Format check
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: "${{ env.PNPM_VERSION }}" }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "${{ env.NODE_VERSION }}"
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check
+
+  typecheck:
+    name: Typecheck
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: "${{ env.PNPM_VERSION }}" }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "${{ env.NODE_VERSION }}"
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+
+  test:
+    name: Unit + Component + Integration (coverage gates)
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: "${{ env.PNPM_VERSION }}" }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "${{ env.NODE_VERSION }}"
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:coverage
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 14
+
+  build:
+    name: Build
+    needs: [lint, typecheck, format]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: "${{ env.PNPM_VERSION }}" }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "${{ env.NODE_VERSION }}"
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+  e2e:
+    name: End-to-end (Playwright)
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: "${{ env.PNPM_VERSION }}" }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "${{ env.NODE_VERSION }}"
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14
+
+  # Tripwires that don't belong in any single test but matter for ADR compliance.
+  guards:
+    name: Repo guards (ADR tripwires)
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: No font binaries in repo (ADR-0005, REQ-016)
+        run: |
+          FOUND=$(find . -type f \( -name '*.ttf' -o -name '*.otf' -o -name '*.woff' -o -name '*.woff2' -o -name '*.eot' \) -not -path './node_modules/*' -not -path './.next/*' -not -path './.git/*' | head -n 5)
+          if [ -n "$FOUND" ]; then
+            echo "::error::Font binaries found in repo (violates ADR-0005):"
+            echo "$FOUND"
+            exit 1
+          fi
+      - name: No direct process.env outside env.ts (ADR tripwire)
+        run: |
+          MATCHES=$(grep -rn --include='*.ts' --include='*.tsx' 'process\.env\.' src app 2>/dev/null | grep -v 'src/lib/env\.ts' || true)
+          if [ -n "$MATCHES" ]; then
+            echo "::error::Direct process.env access outside src/lib/env.ts:"
+            echo "$MATCHES"
+            exit 1
+          fi
+      - name: Requirements table links tests for Done rows
+        run: |
+          # Any row marked Done must reference a test file path.
+          OFFENDERS=$(awk -F'|' '/\| *Done *\|/ { if ($6 !~ /test/) print NR": "$0 }' docs/requirements.md || true)
+          if [ -n "$OFFENDERS" ]; then
+            echo "::error::Requirements marked Done without a linked test:"
+            echo "$OFFENDERS"
+            exit 1
+          fi
+      - name: MSW imported by every integration test (no real network)
+        run: |
+          FILES=$(find src -name '*.integration.test.ts' 2>/dev/null || true)
+          if [ -z "$FILES" ]; then
+            echo "No integration tests yet — skipping."
+            exit 0
+          fi
+          MISSING=""
+          for f in $FILES; do
+            if ! grep -q "@/test/msw" "$f"; then
+              MISSING="$MISSING\n$f"
+            fi
+          done
+          if [ -n "$MISSING" ]; then
+            echo -e "::error::Integration tests missing MSW import:$MISSING"
+            exit 1
+          fi
+
+  ci-pass:
+    name: CI pass
+    if: always()
+    needs: [lint, format, typecheck, test, build, e2e, guards]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify all required jobs passed
+        run: |
+          for r in "${{ needs.lint.result }}" "${{ needs.format.result }}" "${{ needs.typecheck.result }}" "${{ needs.test.result }}" "${{ needs.build.result }}" "${{ needs.e2e.result }}" "${{ needs.guards.result }}"; do
+            if [ "$r" != "success" ]; then
+              echo "::error::A required job did not succeed: $r"
+              exit 1
+            fi
+          done
+          echo "All required jobs passed."
