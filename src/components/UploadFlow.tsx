@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { DropZone } from "./DropZone";
 import { RegionCard } from "./RegionCard";
 import { Button } from "./ui/Button";
@@ -24,18 +24,38 @@ type FlowState =
 export function UploadFlow() {
   const [state, setState] = useState<FlowState>({ kind: "idle" });
 
-  // Revoke object URLs when they go out of use to avoid leaking memory.
+  // Revoke the previous object URL only when a genuinely new URL replaces it
+  // or when we return to idle (no image). We track the last URL in a ref so the
+  // cleanup doesn't race with the render that still needs the current URL.
+  const prevUrlRef = useRef<string | undefined>();
   useEffect(() => {
-    const url =
+    const currentUrl =
       state.kind === "preview" || state.kind === "analyzing" || state.kind === "results"
         ? state.previewUrl
         : state.kind === "error"
           ? state.previewUrl
           : undefined;
+
+    if (prevUrlRef.current && prevUrlRef.current !== currentUrl) {
+      URL.revokeObjectURL(prevUrlRef.current);
+    }
+    prevUrlRef.current = currentUrl;
+
+    // Revoke on unmount.
     return () => {
-      if (url) URL.revokeObjectURL(url);
+      if (prevUrlRef.current) {
+        URL.revokeObjectURL(prevUrlRef.current);
+        prevUrlRef.current = undefined;
+      }
     };
-  }, [state]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally tracking URL identity, not full state
+  }, [
+    state.kind === "preview" || state.kind === "analyzing" || state.kind === "results"
+      ? state.previewUrl
+      : state.kind === "error"
+        ? state.previewUrl
+        : undefined,
+  ]);
 
   const handleFileSelected = useCallback((file: File) => {
     const previewUrl = URL.createObjectURL(file);

@@ -8,7 +8,15 @@
  * This is NOT part of `pnpm run ci`. See eval/README.md.
  */
 import { readFile, writeFile, mkdir } from "node:fs/promises";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
+
+// Load .env manually — tsx/node don't auto-load it like Next.js does.
+if (existsSync(".env")) {
+  for (const line of readFileSync(".env", "utf8").split("\n")) {
+    const m = /^([^#=\s]+)\s*=\s*(.*)$/.exec(line.trim());
+    if (m) process.env[m[1]!] ??= m[2]!;
+  }
+}
 import { resolve, dirname, extname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { z } from "zod";

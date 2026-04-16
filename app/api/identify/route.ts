@@ -131,6 +131,7 @@ export async function POST(request: Request): Promise<Response> {
       );
     }
     if (err instanceof ModelError) {
+      console.error("[identify] ModelError:", err.message, err.cause);
       return errorResponse("model_error", "The upstream model call failed.", 502, baseHeaders);
     }
     throw err;
