@@ -26,9 +26,13 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "ci": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm test:coverage && pnpm build && pnpm test:e2e",
-    "eval": "tsx eval/run.ts"
+    "eval": "tsx eval/run.ts",
+    "eval:fixtures": "tsx eval/fixtures/generate.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.89.0",
+    "@upstash/ratelimit": "^2.0.8",
+    "@upstash/redis": "^1.37.0",
     "next": "^16.2.4",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

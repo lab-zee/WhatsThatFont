@@ -1,0 +1,227 @@
+[
+  {
+    "name": "Helvetica",
+    "license": "bundled-macos",
+    "sourceUrl": "https://support.apple.com/en-us/HT201724",
+    "aliases": ["Helvetica Neue"]
+  },
+  {
+    "name": "Helvetica Now",
+    "license": "proprietary",
+    "sourceUrl": "https://www.monotype.com/fonts/helvetica-now"
+  },
+  {
+    "name": "Futura",
+    "license": "bundled-macos",
+    "sourceUrl": "https://support.apple.com/en-us/HT201724"
+  },
+  {
+    "name": "Avenir",
+    "license": "bundled-macos",
+    "sourceUrl": "https://support.apple.com/en-us/HT201724",
+    "aliases": ["Avenir Next"]
+  },
+  {
+    "name": "Optima",
+    "license": "bundled-macos",
+    "sourceUrl": "https://support.apple.com/en-us/HT201724"
+  },
+  {
+    "name": "Gill Sans",
+    "license": "bundled-macos",
+    "sourceUrl": "https://support.apple.com/en-us/HT201724"
+  },
+  {
+    "name": "Baskerville",
+    "license": "bundled-macos",
+    "sourceUrl": "https://support.apple.com/en-us/HT201724"
+  },
+  {
+    "name": "Bodoni 72",
+    "license": "bundled-macos",
+    "sourceUrl": "https://support.apple.com/en-us/HT201724",
+    "aliases": ["Bodoni"]
+  },
+  {
+    "name": "Didot",
+    "license": "bundled-macos",
+    "sourceUrl": "https://support.apple.com/en-us/HT201724"
+  },
+  {
+    "name": "Copperplate",
+    "license": "bundled-macos",
+    "sourceUrl": "https://support.apple.com/en-us/HT201724"
+  },
+  {
+    "name": "Palatino",
+    "license": "bundled-macos",
+    "sourceUrl": "https://support.apple.com/en-us/HT201724"
+  },
+  {
+    "name": "SF Pro",
+    "license": "bundled-macos",
+    "sourceUrl": "https://developer.apple.com/fonts/",
+    "aliases": ["San Francisco", "SF Pro Display", "SF Pro Text"]
+  },
+  {
+    "name": "New York",
+    "license": "bundled-macos",
+    "sourceUrl": "https://developer.apple.com/fonts/",
+    "aliases": ["SF New York"]
+  },
+  {
+    "name": "SF Mono",
+    "license": "bundled-macos",
+    "sourceUrl": "https://developer.apple.com/fonts/"
+  },
+  {
+    "name": "Menlo",
+    "license": "bundled-macos",
+    "sourceUrl": "https://support.apple.com/en-us/HT201724"
+  },
+  {
+    "name": "Segoe UI",
+    "license": "bundled-windows",
+    "sourceUrl": "https://learn.microsoft.com/en-us/typography/fonts/windows_11_font_list"
+  },
+  {
+    "name": "Calibri",
+    "license": "bundled-windows",
+    "sourceUrl": "https://learn.microsoft.com/en-us/typography/fonts/windows_11_font_list"
+  },
+  {
+    "name": "Cambria",
+    "license": "bundled-windows",
+    "sourceUrl": "https://learn.microsoft.com/en-us/typography/fonts/windows_11_font_list"
+  },
+  {
+    "name": "Consolas",
+    "license": "bundled-windows",
+    "sourceUrl": "https://learn.microsoft.com/en-us/typography/fonts/windows_11_font_list"
+  },
+  {
+    "name": "Georgia",
+    "license": "bundled-windows",
+    "sourceUrl": "https://learn.microsoft.com/en-us/typography/fonts/windows_11_font_list"
+  },
+  {
+    "name": "Tahoma",
+    "license": "bundled-windows",
+    "sourceUrl": "https://learn.microsoft.com/en-us/typography/fonts/windows_11_font_list"
+  },
+  {
+    "name": "Trebuchet MS",
+    "license": "bundled-windows",
+    "sourceUrl": "https://learn.microsoft.com/en-us/typography/fonts/windows_11_font_list"
+  },
+  {
+    "name": "Verdana",
+    "license": "bundled-windows",
+    "sourceUrl": "https://learn.microsoft.com/en-us/typography/fonts/windows_11_font_list"
+  },
+  {
+    "name": "Proxima Nova",
+    "license": "proprietary",
+    "sourceUrl": "https://www.marksimonson.com/fonts/view/proxima-nova"
+  },
+  {
+    "name": "Gotham",
+    "license": "proprietary",
+    "sourceUrl": "https://www.typography.com/fonts/gotham/overview"
+  },
+  {
+    "name": "Gotham Rounded",
+    "license": "proprietary",
+    "sourceUrl": "https://www.typography.com/fonts/gotham-rounded/overview"
+  },
+  {
+    "name": "Univers",
+    "license": "proprietary",
+    "sourceUrl": "https://www.linotype.com/1266/univers-family.html"
+  },
+  {
+    "name": "Frutiger",
+    "license": "proprietary",
+    "sourceUrl": "https://www.linotype.com/1225/frutiger-family.html"
+  },
+  {
+    "name": "Akzidenz-Grotesk",
+    "license": "proprietary",
+    "sourceUrl": "https://www.bertholdtypes.com/font/akzidenz-grotesk-be/"
+  },
+  {
+    "name": "Neue Haas Grotesk",
+    "license": "proprietary",
+    "sourceUrl": "https://www.fontfont.com/fonts/neue-haas-grotesk"
+  },
+  {
+    "name": "Circular",
+    "license": "proprietary",
+    "sourceUrl": "https://lineto.com/typefaces/circular"
+  },
+  {
+    "name": "Tiempos",
+    "license": "proprietary",
+    "sourceUrl": "https://klim.co.nz/retail-fonts/tiempos-headline/"
+  },
+  {
+    "name": "Söhne",
+    "license": "proprietary",
+    "sourceUrl": "https://klim.co.nz/retail-fonts/soehne/"
+  },
+  {
+    "name": "National",
+    "license": "proprietary",
+    "sourceUrl": "https://klim.co.nz/retail-fonts/national/"
+  },
+  {
+    "name": "Aktiv Grotesk",
+    "license": "proprietary",
+    "sourceUrl": "https://www.dalton-maag.com/library/aktiv-grotesk"
+  },
+  {
+    "name": "Neue Machina",
+    "license": "proprietary",
+    "sourceUrl": "https://pangrampangram.com/products/neue-machina"
+  },
+  {
+    "name": "Founders Grotesk",
+    "license": "proprietary",
+    "sourceUrl": "https://klim.co.nz/retail-fonts/founders-grotesk/"
+  },
+  {
+    "name": "Graphik",
+    "license": "proprietary",
+    "sourceUrl": "https://commercialclassics.com/typefaces/graphik"
+  },
+  {
+    "name": "Sharp Grotesk",
+    "license": "proprietary",
+    "sourceUrl": "https://sharptype.co/typefaces/sharp-grotesk/"
+  },
+  {
+    "name": "Suisse Int'l",
+    "license": "proprietary",
+    "sourceUrl": "https://www.swisstypefaces.com/fonts/suisse/"
+  },
+  {
+    "name": "ITC Avant Garde",
+    "license": "proprietary",
+    "sourceUrl": "https://www.myfonts.com/collections/itc-avant-garde-gothic-font-itc"
+  },
+  {
+    "name": "Bodoni",
+    "license": "proprietary",
+    "sourceUrl": "https://www.myfonts.com/collections/bodoni-font"
+  },
+  {
+    "name": "Garamond",
+    "license": "proprietary",
+    "sourceUrl": "https://www.myfonts.com/collections/garamond-font"
+  },
+  {
+    "name": "Caslon",
+    "license": "proprietary",
+    "sourceUrl": "https://www.myfonts.com/collections/caslon-font"
+  }
+]

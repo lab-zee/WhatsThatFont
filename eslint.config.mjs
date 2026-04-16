@@ -27,6 +27,11 @@ const config = [
       eqeqeq: ["error", "always"],
     },
   },
+  {
+    // CLI scripts and config files legitimately write to stdout.
+    files: ["eval/**/*.ts", "*.config.{ts,mjs}"],
+    rules: { "no-console": "off" },
+  },
 ];
 
 export default config;

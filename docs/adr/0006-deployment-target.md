@@ -39,7 +39,7 @@ Attractive (persistent processes, cheaper at low traffic, closer to "one Docker 
 
 ### B. Railway / Render
 
-Both fine. Not chosen as canonical, but the Docker path works on either.
+Both fine. Not chosen as canonical, but the Docker path works on either — Railway is in fact the path the initial maintainer is taking for v1. The repo README documents Railway explicitly; the Dockerfile is the source of truth and has no platform-specific code.
 
 ### C. Cloudflare Pages + Workers
 

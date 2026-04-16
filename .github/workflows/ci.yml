@@ -159,21 +159,45 @@ jobs:
         run: |
           # Allowlist: src/lib/env.ts is the only place that reads process.env in feature code.
           # Test setup files (src/test/**) may seed env vars before env.ts parses them.
-          MATCHES=$(grep -rn --include='*.ts' --include='*.tsx' 'process\.env\.' src app 2>/dev/null | grep -v -e 'src/lib/env\.ts' -e 'src/test/' || true)
+          MATCHES=$(grep -rn --include='*.ts' --include='*.tsx' 'process\.env\.' src app 2>/dev/null | grep -v -e 'src/lib/env\.ts' -e 'src/test/' -e '\.test\.ts' -e '\.test\.tsx' || true)
           if [ -n "$MATCHES" ]; then
             echo "::error::Direct process.env access outside src/lib/env.ts (src/test/ is allowed for seeding env in tests):"
             echo "$MATCHES"
             exit 1
           fi
-      - name: Requirements table links tests for Done rows
+      - name: Requirements table links evidence for Done rows
         run: |
-          # Any row marked Done must reference a test file path.
-          OFFENDERS=$(awk -F'|' '/\| *Done *\|/ { if ($6 !~ /test/) print NR": "$0 }' docs/requirements.md || true)
+          # Any row marked Done must reference at least one markdown link `[text](path)`
+          # in the Tests column — normally a test file, but the eval runner / Dockerfile /
+          # workflow itself also qualifies where no traditional test applies.
+          # Column layout: | ID | Requirement | Source | Priority | Status | Tests | Notes |
+          # → awk fields:  $1  $2   $3        $4      $5         $6      $7     $8     $9
+          OFFENDERS=$(awk -F'|' '
+            /\| *Done *\|/ {
+              tests = $7
+              gsub(/^[[:space:]]+|[[:space:]]+$/, "", tests)
+              if (tests !~ /\[[^]]+\]\([^)]+\)/) {
+                print NR": "$0
+              }
+            }
+          ' docs/requirements.md || true)
           if [ -n "$OFFENDERS" ]; then
-            echo "::error::Requirements marked Done without a linked test:"
+            echo "::error::Requirements marked Done without a linked evidence path in the Tests column:"
             echo "$OFFENDERS"
             exit 1
           fi
+      - name: No filesystem writes in request handlers (ADR-0007, REQ-010)
+        run: |
+          # Route handlers must not write to disk; uploaded images live in memory only.
+          # This grep is deliberately strict — even legitimate writes (logs, caches) need
+          # a new ADR explaining why.
+          MATCHES=$(grep -rnE 'writeFile|createWriteStream|appendFile|fs\.write|mkdtemp|tmpfile' app/api src/lib/ai src/lib/validation 2>/dev/null || true)
+          if [ -n "$MATCHES" ]; then
+            echo "::error::Filesystem write calls found in request path (violates ADR-0007):"
+            echo "$MATCHES"
+            exit 1
+          fi
+
       - name: MSW imported by every integration test (no real network)
         run: |
           FILES=$(find src -name '*.integration.test.ts' 2>/dev/null || true)

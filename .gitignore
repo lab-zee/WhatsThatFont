@@ -46,5 +46,7 @@ yarn-error.log*
 !.vscode/extensions.json
 !.vscode/settings.json
 
-# eval outputs (reports are committed on demand, not every run)
+# eval outputs and images (baselines and manifest ARE committed)
 /eval/reports/
+/eval/images/*
+!/eval/images/.gitkeep

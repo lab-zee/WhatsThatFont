@@ -24,6 +24,14 @@ export type Env = z.infer<typeof Schema>;
 
 let cached: Env | null = null;
 
+/**
+ * Clear the cached parsed env. For tests that mutate process.env between cases.
+ * Do not call this from feature code.
+ */
+export function resetEnvCache(): void {
+  cached = null;
+}
+
 export function getEnv(): Env {
   if (cached) return cached;
 

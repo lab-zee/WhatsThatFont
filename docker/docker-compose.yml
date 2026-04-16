@@ -1,0 +1,25 @@
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: whatsthatfont:local
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      # Required: your Anthropic API key.
+      ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY}"
+      # Optional tuning — defaults below are fine for a single-user self-host.
+      WTF_MODEL: "${WTF_MODEL:-opus}"
+      WTF_RATELIMIT: "${WTF_RATELIMIT:-memory}"
+      WTF_RATELIMIT_IDENTIFY: "${WTF_RATELIMIT_IDENTIFY:-10/1h}"
+      WTF_RATELIMIT_LOOKUP: "${WTF_RATELIMIT_LOOKUP:-60/1m}"
+      # Optional: exposed to /api/health for cheap sanity checks.
+      GIT_SHA: "${GIT_SHA:-docker}"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

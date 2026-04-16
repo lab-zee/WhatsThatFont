@@ -1,0 +1,1 @@
+Drop reference images here to run `pnpm eval`. See ../README.md for the required filenames (they must match `eval/manifest.json` entries).
