@@ -27,7 +27,7 @@ export function UploadFlow() {
   // Revoke the previous object URL only when a genuinely new URL replaces it
   // or when we return to idle (no image). We track the last URL in a ref so the
   // cleanup doesn't race with the render that still needs the current URL.
-  const prevUrlRef = useRef<string | undefined>();
+  const prevUrlRef = useRef<string | undefined>(undefined);
   useEffect(() => {
     const currentUrl =
       state.kind === "preview" || state.kind === "analyzing" || state.kind === "results"
