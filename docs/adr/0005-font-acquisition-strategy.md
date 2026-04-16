@@ -5,7 +5,7 @@
 
 ## Context
 
-Identifying the font is only half of the product promise — the user wants to *use* it. Fonts live across wildly different distribution models:
+Identifying the font is only half of the product promise — the user wants to _use_ it. Fonts live across wildly different distribution models:
 
 - **Open-license** (SIL Open Font License, Apache): Google Fonts. Free, redistributable, easy CDN embed.
 - **OS-bundled**: macOS ships Bodoni 72, SF Pro, Helvetica, etc. Windows ships Segoe UI, Calibri. Not redistributable but legitimately usable on the owning OS.

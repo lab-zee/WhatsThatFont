@@ -17,9 +17,9 @@ Analyze an uploaded image and return ranked font candidates per detected text re
 
 **Request** — `multipart/form-data`:
 
-| Field   | Type   | Required | Notes                                           |
-|---------|--------|----------|-------------------------------------------------|
-| `image` | File   | yes      | JPG, PNG, or WebP. Max 10 MB.                   |
+| Field   | Type   | Required | Notes                                                                   |
+| ------- | ------ | -------- | ----------------------------------------------------------------------- |
+| `image` | File   | yes      | JPG, PNG, or WebP. Max 10 MB.                                           |
 | `hint`  | string | no       | Optional free-text hint, e.g. "focus on headline". Capped at 200 chars. |
 
 **Response** — `200 OK`, `application/json`:
@@ -44,7 +44,11 @@ Analyze an uploaded image and return ranked font candidates per detected text re
               "cssFamily": "'Playfair Display', serif"
             },
             "desktopDownloads": [
-              { "label": "Google Fonts (free)", "url": "https://fonts.google.com/specimen/Playfair+Display", "license": "OFL" }
+              {
+                "label": "Google Fonts (free)",
+                "url": "https://fonts.google.com/specimen/Playfair+Display",
+                "license": "OFL"
+              }
             ]
           },
           "verified": true
@@ -56,7 +60,11 @@ Analyze an uploaded image and return ranked font candidates per detected text re
           "sources": {
             "googleFont": null,
             "desktopDownloads": [
-              { "label": "Bundled with macOS", "url": "https://support.apple.com/en-us/HT201724", "license": "proprietary" }
+              {
+                "label": "Bundled with macOS",
+                "url": "https://support.apple.com/en-us/HT201724",
+                "license": "proprietary"
+              }
             ]
           },
           "verified": true
@@ -80,14 +88,14 @@ Analyze an uploaded image and return ranked font candidates per detected text re
 
 **Errors**:
 
-| Status | `code`              | When                                        |
-|--------|---------------------|---------------------------------------------|
-| 400    | `invalid_image`     | Wrong MIME, corrupted, or 0-byte payload.   |
-| 413    | `image_too_large`   | > 10 MB.                                    |
-| 415    | `unsupported_media` | Not JPG/PNG/WebP.                           |
-| 429    | `rate_limited`      | Per-IP limit exhausted. `Retry-After` set.  |
-| 502    | `model_error`       | Upstream Anthropic API failed.              |
-| 504    | `model_timeout`     | Model call exceeded 45 s.                   |
+| Status | `code`              | When                                       |
+| ------ | ------------------- | ------------------------------------------ |
+| 400    | `invalid_image`     | Wrong MIME, corrupted, or 0-byte payload.  |
+| 413    | `image_too_large`   | > 10 MB.                                   |
+| 415    | `unsupported_media` | Not JPG/PNG/WebP.                          |
+| 429    | `rate_limited`      | Per-IP limit exhausted. `Retry-After` set. |
+| 502    | `model_error`       | Upstream Anthropic API failed.             |
+| 504    | `model_timeout`     | Model call exceeded 45 s.                  |
 
 ### `GET /api/health`
 

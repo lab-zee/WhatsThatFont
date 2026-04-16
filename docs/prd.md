@@ -7,7 +7,7 @@ Designers working from reference images (screenshots, mood boards, inspiration p
 - **Specialist tools** (WhatTheFont, Fontspring Matcherator): require isolated glyph crops; brittle with multi-font layouts, stylized text, or low-resolution sources.
 - **General LLMs** (ChatGPT, Claude, Gemini): surprisingly unreliable without heavy prompting. Hallucinate font names, ignore parts of the image, or give generic answers like "a sans-serif".
 
-Neither makes it easy to go from identification to *using* the font.
+Neither makes it easy to go from identification to _using_ the font.
 
 ## 2. Goals
 
@@ -49,7 +49,7 @@ If a font is commercial-only (e.g. proprietary Adobe Fonts, Monotype), we link t
 
 - Vision-capable LLM (Claude Opus 4.6) with a system prompt engineered for typographic analysis.
 - Structured output schema enforced via tool use — the model cannot emit free-form prose as the final answer.
-- Model is required to emit *visual rationale* per suggestion, which raises accuracy and lets the user sanity-check.
+- Model is required to emit _visual rationale_ per suggestion, which raises accuracy and lets the user sanity-check.
 - Cross-verification: every suggested font name is validated against the Google Fonts catalog and a curated list of well-known foundries. Unknown names are flagged `unverified` in the UI rather than silently dropped — a hallucinated name is still a useful hint for search.
 - Confidence is reported as `high | medium | low`, not a fake percentage.
 

@@ -25,7 +25,7 @@ pnpm test:e2e:ui          # Playwright in UI mode for debugging.
 
 pnpm build                # next build.
 
-pnpm ci                   # lint + typecheck + format:check + test:coverage + build + test:e2e.
+pnpm run ci                   # lint + typecheck + format:check + test:coverage + build + test:e2e.
                           # This is what CI runs. If this passes locally, CI passes.
 
 pnpm eval                 # Accuracy eval against real Anthropic. Requires ANTHROPIC_API_KEY.
@@ -34,12 +34,12 @@ pnpm eval                 # Accuracy eval against real Anthropic. Requires ANTHR
 
 ## Test file conventions
 
-| Filename                    | Runner              | Location                      |
-|-----------------------------|---------------------|-------------------------------|
-| `*.unit.test.ts`            | Vitest (node)       | Next to the code under test.  |
-| `*.component.test.tsx`      | Vitest (jsdom)      | Next to the component.        |
-| `*.integration.test.ts`     | Vitest (node + MSW) | `src/app/api/**/` and similar.|
-| `*.e2e.ts`                  | Playwright          | `e2e/`                        |
+| Filename                | Runner              | Location                       |
+| ----------------------- | ------------------- | ------------------------------ |
+| `*.unit.test.ts`        | Vitest (node)       | Next to the code under test.   |
+| `*.component.test.tsx`  | Vitest (jsdom)      | Next to the component.         |
+| `*.integration.test.ts` | Vitest (node + MSW) | `src/app/api/**/` and similar. |
+| `*.e2e.ts`              | Playwright          | `e2e/`                         |
 
 Rules:
 
@@ -106,7 +106,7 @@ describe("POST /api/identify", () => {
 
 Enforced in CI on every PR.
 
-- **`src/lib/**`**: line ≥ 80 %, branch ≥ 75 %.
+- **`src/lib/**`\*\*: line ≥ 80 %, branch ≥ 75 %.
 - **Everything (excluding `src/test/**`, `e2e/**`, config files)**: line ≥ 60 %.
 
 Falling below a gate fails the build. If a gate is wrong, raise a PR that argues for changing it; don't silently lower it.

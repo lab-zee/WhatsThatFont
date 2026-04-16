@@ -32,7 +32,7 @@ Competitive on vision tasks. Rejected for the same "one vendor" reason and to ke
 
 ### C. Specialist image-matching APIs (MyFonts WhatTheFont, Fontspring)
 
-Closed APIs, commercial terms, and designed for isolated glyph crops rather than whole-reference-image analysis. We *could* call one as a verification step, but the licensing and cost make it a bad fit for an open-source project.
+Closed APIs, commercial terms, and designed for isolated glyph crops rather than whole-reference-image analysis. We _could_ call one as a verification step, but the licensing and cost make it a bad fit for an open-source project.
 
 ### D. Local model (LLaVA / Qwen-VL / Pixtral)
 

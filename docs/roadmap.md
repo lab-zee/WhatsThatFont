@@ -2,7 +2,7 @@
 
 A sequenced build plan. Each milestone is a stopping point with something runnable.
 
-**Working rule for every milestone**: TDD is the default. Each task below implies "write the tests first, land code when the tests pass, update [requirements.md](./requirements.md)." `pnpm ci` must be green at the end of every milestone.
+**Working rule for every milestone**: TDD is the default. Each task below implies "write the tests first, land code when the tests pass, update [requirements.md](./requirements.md)." `pnpm run ci` must be green at the end of every milestone.
 
 ## M0 — Skeleton + test rails (day 1)
 
@@ -15,13 +15,13 @@ A sequenced build plan. Each milestone is a stopping point with something runnab
   - Playwright config + one smoke `e2e/landing.e2e.ts`.
   - MSW scaffolding in `src/test/msw/` with a placeholder handler.
   - One example test per layer so contributors have a template.
-- `pnpm ci` script that runs lint + format:check + typecheck + test:coverage + build + test:e2e.
+- `pnpm run ci` script that runs lint + format:check + typecheck + test:coverage + build + test:e2e.
 - `.github/workflows/ci.yml` already landed — verify all jobs pass against the new scaffold.
 - `README.md` with quickstart (local dev + Docker), linking to `CLAUDE.md` and `docs/`.
 - `CONTRIBUTING.md` including the curated-catalog PR process and the TDD expectation.
 - Prettier + ESLint configured with a shared config, format enforced.
 
-**Exit criteria**: `pnpm dev` shows a landing page; `pnpm ci` is green locally and in GitHub Actions; example tests exist for each layer.
+**Exit criteria**: `pnpm dev` shows a landing page; `pnpm run ci` is green locally and in GitHub Actions; example tests exist for each layer.
 
 ## M1 — Backend happy path (REQ-003/004/005/011/012/017/018/019/020/026)
 

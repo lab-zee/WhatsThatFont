@@ -11,8 +11,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  NODE_VERSION: "20"
-  PNPM_VERSION: "9"
+  NODE_VERSION: "24.9.0"
+  PNPM_VERSION: "10"
   # Deterministic test env. No real API calls from unit/component/integration.
   ANTHROPIC_API_KEY: "test-key-never-used"
   WTF_RATELIMIT: "off"
@@ -157,9 +157,11 @@ jobs:
           fi
       - name: No direct process.env outside env.ts (ADR tripwire)
         run: |
-          MATCHES=$(grep -rn --include='*.ts' --include='*.tsx' 'process\.env\.' src app 2>/dev/null | grep -v 'src/lib/env\.ts' || true)
+          # Allowlist: src/lib/env.ts is the only place that reads process.env in feature code.
+          # Test setup files (src/test/**) may seed env vars before env.ts parses them.
+          MATCHES=$(grep -rn --include='*.ts' --include='*.tsx' 'process\.env\.' src app 2>/dev/null | grep -v -e 'src/lib/env\.ts' -e 'src/test/' || true)
           if [ -n "$MATCHES" ]; then
-            echo "::error::Direct process.env access outside src/lib/env.ts:"
+            echo "::error::Direct process.env access outside src/lib/env.ts (src/test/ is allowed for seeding env in tests):"
             echo "$MATCHES"
             exit 1
           fi

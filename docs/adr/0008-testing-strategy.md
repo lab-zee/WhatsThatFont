@@ -17,20 +17,20 @@ We need a stack that encourages test-driven development, runs fast enough for TD
 
 Four test layers, each with a clear home and tool:
 
-| Layer        | Tool                  | Scope                                                | Speed target |
-|--------------|-----------------------|------------------------------------------------------|--------------|
-| Unit         | **Vitest**            | Pure functions: schema validation, name normalization, font resolution, limiter math. No network. | <5 s full suite |
-| Component    | **Vitest + React Testing Library** | React components in isolation. jsdom. | <15 s full suite |
-| Integration  | **Vitest + MSW**      | API route handlers end-to-end with mocked Anthropic / Google Fonts / Upstash. | <30 s full suite |
-| E2E          | **Playwright**        | Real browser against a locally-started Next.js server with mocked upstreams. | <2 min full suite |
-| Accuracy eval| **Custom runner**     | Real Anthropic calls against a labeled image set. Not in standard CI. | Manual |
+| Layer         | Tool                               | Scope                                                                                             | Speed target      |
+| ------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------- | ----------------- |
+| Unit          | **Vitest**                         | Pure functions: schema validation, name normalization, font resolution, limiter math. No network. | <5 s full suite   |
+| Component     | **Vitest + React Testing Library** | React components in isolation. jsdom.                                                             | <15 s full suite  |
+| Integration   | **Vitest + MSW**                   | API route handlers end-to-end with mocked Anthropic / Google Fonts / Upstash.                     | <30 s full suite  |
+| E2E           | **Playwright**                     | Real browser against a locally-started Next.js server with mocked upstreams.                      | <2 min full suite |
+| Accuracy eval | **Custom runner**                  | Real Anthropic calls against a labeled image set. Not in standard CI.                             | Manual            |
 
 ### Hard rules
 
 - **TDD is the default.** New behavior lands with a failing test first. Bug fixes include a regression test that fails on `main`.
 - **No network in unit/component/integration tests.** All external calls go through **MSW** handlers defined in [`src/test/msw/`](#). A test that tries to hit real Anthropic fails loudly.
 - **Coverage gates**: line coverage ≥ 80 % on `src/lib/**` (the pure-logic core), ≥ 60 % overall. Gates enforced in CI.
-- **Same command locally and in CI.** `pnpm ci` runs the exact job set CI runs. No "works on my machine" path.
+- **Same command locally and in CI.** `pnpm run ci` runs the exact job set CI runs. No "works on my machine" path.
 - **Deterministic.** No `Math.random`, no unpinned dates. Tests that need randomness inject seeds; tests that need time use Vitest's fake timers.
 - **Mocks live next to interfaces, not next to consumers.** The Anthropic mock lives in `src/test/msw/anthropic.ts`, not duplicated in each test file.
 - **Snapshot tests are opt-in, never default.** Snapshots rot; explicit assertions don't.
@@ -66,7 +66,7 @@ Over-engineered for v1 with a single frontend-backend pair in one repo. Revisit 
 ## Consequences
 
 - **Pro**: Strong regression safety for the parts that matter (pure logic + API contract). Fast inner loop for TDD.
-- **Pro**: Local and CI parity via `pnpm ci` lowers the friction of contribution.
+- **Pro**: Local and CI parity via `pnpm run ci` lowers the friction of contribution.
 - **Pro**: Accuracy is tracked as a first-class dimension via the eval track, separately from the unit/integration gates.
 - **Con**: Four layers is four sets of conventions to maintain. Mitigated by `docs/testing.md` and example tests shipped at M0.
 - **Con**: Coverage gates can incentivize shallow tests. We accept the tradeoff and ask reviewers to flag assertion-thin tests.

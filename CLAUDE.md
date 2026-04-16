@@ -50,6 +50,7 @@ Actions that should cause you to stop and ask the user before proceeding:
 - Loosening a coverage gate.
 - Adding `// eslint-disable` / `@ts-ignore` / `@ts-expect-error` without a comment explaining why.
 - Introducing auth, accounts, or user-identifying analytics.
+- Bumping ESLint past 9.x. The Next.js ESLint config pulls in `eslint-plugin-react@7.37.x` which calls APIs removed in ESLint 10; the whole plugin ecosystem is still catching up. Revisit when `eslint-plugin-react` ships an ESLint-10-compatible stable release.
 
 ## 4. Coding conventions
 
@@ -58,7 +59,7 @@ Actions that should cause you to stop and ask the user before proceeding:
 - **Env vars**: declared once in `src/lib/env.ts` with a Zod schema. Never read `process.env.X` directly in feature code.
 - **Errors**: route handlers return the error shape in [api-spec.md](docs/api-spec.md). Never leak stack traces. Log internally with a `requestId`.
 - **Logging**: structured (JSON). Never log image bytes, pixel data, or anything that could be the image itself.
-- **Comments**: default to none. Only add when the *why* is non-obvious. No "this function does X" comments.
+- **Comments**: default to none. Only add when the _why_ is non-obvious. No "this function does X" comments.
 - **Imports**: absolute via `@/*` alias for anything in `src/`. Relative only within the same folder.
 - **Exports**: named only. No default exports (Next.js pages are the exception Next requires).
 
@@ -90,7 +91,7 @@ Tests live next to the code they test (`foo.ts` → `foo.unit.test.ts` in the sa
 Checklist before you say "done":
 
 - [ ] Tests written first, now passing.
-- [ ] `pnpm ci` passes locally.
+- [ ] `pnpm run ci` passes locally.
 - [ ] [requirements.md](docs/requirements.md) updated with status + test link.
 - [ ] If a public contract changed (API, env vars, schema), [api-spec.md](docs/api-spec.md) or relevant spec updated.
 - [ ] If an architectural decision was made, a new ADR added under [docs/adr/](docs/adr/).
@@ -108,7 +109,7 @@ Checklist before you say "done":
 
 ## 8. Phases and scope
 
-We are currently in **Phase 1 (v1)**. Items marked `Deferred` or listed under "Phase 2+" in requirements.md are *not* in scope. Do not build toward them speculatively. Do not add abstractions "in case we need them later" — we won't know what we need until we need it. Keep Phase 1 small and sharp.
+We are currently in **Phase 1 (v1)**. Items marked `Deferred` or listed under "Phase 2+" in requirements.md are _not_ in scope. Do not build toward them speculatively. Do not add abstractions "in case we need them later" — we won't know what we need until we need it. Keep Phase 1 small and sharp.
 
 ## 9. Communication
 
